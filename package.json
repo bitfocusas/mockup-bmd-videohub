@@ -1,5 +1,5 @@
 {
-  "name": "@bitfocus/mockup-bmd-videohub",
+  "name": "@bitfocusas/mockup-bmd-videohub",
   "version": "1.0.0",
   "main": "./dist/index.js",
   "scripts": {
