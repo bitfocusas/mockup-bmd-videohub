@@ -70,12 +70,20 @@ server.on("connection", (socket) => {
 });
 
 function sendProtocolPreamble(socket: net.Socket) {
-	const preamble = `PROTOCOL PREAMBLE:\r\nVersion: ${PROTOCOL_VERSION} \r\n\r\n`;
+	const preamble = `PROTOCOL PREAMBLE:\nVersion: ${PROTOCOL_VERSION} \n\n`;
 	socket.write(preamble);
 }
 
 function sendDeviceInformation(socket: net.Socket) {
-	const deviceInfo = `VIDEOHUB DEVICE:\r\nDevice present: true\r\nModel name: Blackmagic Smart Videohub\r\nVideo inputs: ${inputCount}\r\nVideo processing units: 0\r\nVideo outputs: ${outputCount}\r\nVideo monitoring outputs: 0\r\nSerial ports: 0\r\n\r\n`;
+	const deviceInfo = `VIDEOHUB DEVICE:
+Device present: true
+Model name: Blackmagic Smart Videohub
+Friendly name: Mockup ${inputCount}x${outputCount} videohub
+Video inputs: ${inputCount}
+Video processing units: 0
+Video outputs: ${outputCount}
+Video monitoring outputs: 0
+Serial ports: 0\n\n`;
 	socket.write(deviceInfo);
 }
 
@@ -87,29 +95,29 @@ function sendInitialStatusDump(socket: net.Socket) {
 }
 
 function sendLabels(socket: net.Socket, header: string, labels: Label) {
-	let message = `${header}:\r\n`;
+	let message = `${header}:\n`;
 	for (const key in labels) {
-		message += `${key} ${labels[key]}\r\n`;
+		message += `${key} ${labels[key]}\n`;
 	}
-	message += "\r\n";
+	message += "\n";
 	socket.write(message);
 }
 
 function sendRouting(socket: net.Socket, header: string, routing: Routing) {
-	let message = `${header}:\r\n`;
+	let message = `${header}:\n`;
 	for (const key in routing) {
-		message += `${key} ${routing[key]}\r\n`;
+		message += `${key} ${routing[key]}\n`;
 	}
-	message += "\r\n";
+	message += "\n";
 	socket.write(message);
 }
 
 function sendLocks(socket: net.Socket, header: string, locks: Locks) {
-	let message = `${header}:\r\n`;
+	let message = `${header}:\n`;
 	for (const key in locks) {
-		message += `${key} ${locks[key]}\r\n`;
+		message += `${key} ${locks[key]}\n`;
 	}
-	message += "\r\n";
+	message += "\n";
 	socket.write(message);
 }
 
@@ -123,12 +131,13 @@ function handleIncomingData(
 	let currentHeader = "";
 	let blockLines: string[] = [];
 
-	for (const line of lines) {
+	for (let line of lines) {
+		line = line.trimEnd()
 		if (line.endsWith(":")) {
 			// New header
 			currentHeader = line.trim();
 			blockLines = [];
-		} else if (line.trim() === "") {
+		} else if (line === "") {
 			// End of block
 			if (currentHeader) {
 				parseClientCommand(socket, currentHeader, blockLines, clientState);
@@ -172,11 +181,11 @@ function parseClientCommand(
 }
 
 function sendACK(socket: net.Socket) {
-	socket.write("ACK\r\n\r\n");
+	socket.write("ACK\n\n");
 }
 
 function sendNAK(socket: net.Socket) {
-	socket.write("NAK\r\n\r\n");
+	socket.write("NAK\n\n");
 }
 
 function handlePing(socket: net.Socket) {
@@ -185,18 +194,20 @@ function handlePing(socket: net.Socket) {
 
 function handleVideoOutputRoutingCommand(socket: net.Socket, lines: string[]) {
 	let updated = false;
+	const changes: Routing = {}
 	for (const line of lines) {
 		const [outputStr, inputStr] = line.split(" ");
 		const output = Number.parseInt(outputStr);
 		const input = Number.parseInt(inputStr);
 		if (!Number.isNaN(output) && !Number.isNaN(input)) {
 			videoOutputRouting[output] = input;
+			changes[output] = input;
 			updated = true;
 		}
 	}
 	if (updated) {
 		sendACK(socket);
-		broadcastRoutingUpdate("VIDEO OUTPUT ROUTING", videoOutputRouting);
+		broadcastRoutingUpdate("VIDEO OUTPUT ROUTING", changes);
 	} else {
 		sendNAK(socket);
 	}
@@ -208,11 +219,11 @@ function broadcastRoutingUpdate(header: string, routing: Routing) {
 }
 
 function buildRoutingMessage(header: string, routing: Routing) {
-	let message = `${header}:\r\n`;
+	let message = `${header}:\n`;
 	for (const key in routing) {
-		message += `${key} ${routing[key]}\r\n`;
+		message += `${key} ${routing[key]}\n`;
 	}
-	message += "\r\n";
+	message += "\n";
 	return message;
 }
 
@@ -224,6 +235,7 @@ function broadcastMessage(message: string) {
 
 function handleOutputLabelsCommand(socket: net.Socket, lines: string[]) {
 	let updated = false;
+	const changes: Label = {}
 	for (const line of lines) {
 		const index = line.indexOf(" ");
 		if (index > -1) {
@@ -232,13 +244,14 @@ function handleOutputLabelsCommand(socket: net.Socket, lines: string[]) {
 			const output = Number.parseInt(outputStr);
 			if (!Number.isNaN(output)) {
 				outputLabels[output] = label;
+				changes[output] = label;
 				updated = true;
 			}
 		}
 	}
 	if (updated) {
 		sendACK(socket);
-		broadcastLabelsUpdate("OUTPUT LABELS", outputLabels);
+		broadcastLabelsUpdate("OUTPUT LABELS", changes);
 	} else {
 		sendNAK(socket);
 	}
@@ -250,11 +263,11 @@ function broadcastLabelsUpdate(header: string, labels: Label) {
 }
 
 function buildLabelsMessage(header: string, labels: Label) {
-	let message = `${header}:\r\n`;
+	let message = `${header}:\n`;
 	for (const key in labels) {
-		message += `${key} ${labels[key]}\r\n`;
+		message += `${key} ${labels[key]}\n`;
 	}
-	message += "\r\n";
+	message += "\n";
 	return message;
 }
 
@@ -264,21 +277,22 @@ function handleVideoOutputLocksCommand(
 	clientState: ClientState,
 ) {
 	let updated = false;
+	const changes: Locks = {}
 	for (const line of lines) {
 		const [outputStr, status] = line.split(" ");
 		const output = Number.parseInt(outputStr);
 		if (!Number.isNaN(output) && ["U", "L", "O", "F"].includes(status)) {
 			if (status === "O") {
 				// Lock the port
-				videoOutputLocks[output] = "O";
+				videoOutputLocks[output] = changes[output] = "O";
 				updated = true;
 			} else if (status === "U") {
 				// Unlock the port
-				videoOutputLocks[output] = "U";
+				videoOutputLocks[output] = changes[output] = "U";
 				updated = true;
 			} else if (status === "F") {
 				// Force unlock
-				videoOutputLocks[output] = "U";
+				videoOutputLocks[output] = changes[output] ="U";
 				updated = true;
 			}
 			// Note: In a real implementation, you'd check ownership and handle 'L' status
@@ -286,7 +300,7 @@ function handleVideoOutputLocksCommand(
 	}
 	if (updated) {
 		sendACK(socket);
-		broadcastLocksUpdate("VIDEO OUTPUT LOCKS", videoOutputLocks);
+		broadcastLocksUpdate("VIDEO OUTPUT LOCKS", changes);
 	} else {
 		sendNAK(socket);
 	}
@@ -298,11 +312,11 @@ function broadcastLocksUpdate(header: string, locks: Locks) {
 }
 
 function buildLocksMessage(header: string, locks: Locks) {
-	let message = `${header}:\r\n`;
+	let message = `${header}:\n`;
 	for (const key in locks) {
-		message += `${key} ${locks[key]}\r\n`;
+		message += `${key} ${locks[key]}\n`;
 	}
-	message += "\r\n";
+	message += "\n";
 	return message;
 }
 
