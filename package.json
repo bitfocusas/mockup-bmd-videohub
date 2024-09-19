@@ -28,8 +28,12 @@
       "tagName": "v${version}"
     },
     "npm": {
-      "publish": false
+      "publish": true
     }
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "author": "William Viker <william@bitfocus.io>",
   "license": "MIT",
