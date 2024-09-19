@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import * as net from "node:net";
 
 const PROTOCOL_VERSION = "2.3";

@@ -1,14 +1,14 @@
 {
   "name": "@bitfocusas/mockup-bmd-videohub",
   "version": "1.0.2",
-  "main": "./dist/index.js",
+  "main": "./dist/src/index.js",
   "bin": {
-    "mockup-bmd-videohub": "./dist/server.js"
+    "mockup-bmd-videohub": "./dist/src/server.js"
   },
   "scripts": {
-    "start": "node dist/server.js",
-    "build": "tsc",
-    "dev": "nodemon --watch src -e ts --exec ts-node src/server.ts",
+    "start": "node dist/src/server.js",
+    "build": "tsc && chmod +x dist/src/server.js",
+    "dev": "nodemon --watch src -e ts --exec ts-node src/server.js",
     "test": "jest"
   },
   "keywords": [
