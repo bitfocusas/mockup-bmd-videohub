@@ -1,7 +1,7 @@
 # Mockup Blackmagic Videohub Server
 
-[![NPM Version](https://img.shields.io/npm/v/@bitfocusas/gmockup-bmd-videohub.svg)](https://www.npmjs.com/package/@bitfocusas/mockup-bmd-videohub)
-[![License](https://img.shields.io/npm/l/@bitfocusas/gmockup-bmd-videohub.svg)](LICENSE)
+[![NPM Version](https://img.shields.io/npm/v/@bitfocusas/mockup-bmd-videohub.svg)](https://www.npmjs.com/package/@bitfocusas/mockup-bmd-videohub)
+[![License](https://img.shields.io/npm/l/@bitfocusas/mockup-bmd-videohub.svg)](LICENSE)
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Donate](https://img.shields.io/badge/donate-donorbox-blue.svg)](https://donorbox.org/bitfocus-opensource)
 
@@ -19,13 +19,13 @@ A mockup server that emulates the Blackmagic Videohub Ethernet Protocol v2.3, al
 You can run the mockup server directly using `npx`:
 
 ```bash
-npx @bitfocusas/gmockup-bmd-videohub
+npx @bitfocusas/mockup-bmd-videohub
 ```
 
 Alternatively, install it globally:
 
 ```bash
-npm install -g @bitfocusas/gmockup-bmd-videohub
+npm install -g @bitfocusas/mockup-bmd-videohub
 ```
 
 ## Usage
@@ -40,13 +40,13 @@ npm install -g @bitfocusas/gmockup-bmd-videohub
 To start the server with default settings:
 
 ```bash
-npx @bitfocusas/gmockup-bmd-videohub
+npx @bitfocusas/mockup-bmd-videohub
 ```
 
 To specify the number of IO ports and the listening port:
 
 ```bash
-IO=128 PORT=9991 npx @bitfocusas/gmockup-bmd-videohub
+IO=128 PORT=9991 npx @bitfocusas/mockup-bmd-videohub
 ```
 
 Example with custom settings:
@@ -54,13 +54,13 @@ Example with custom settings:
 ```bash
 export IO=64
 export PORT=9992
-npx @bitfocusas/gmockup-bmd-videohub
+npx @bitfocusas/mockup-bmd-videohub
 ```
 
 Or in one line:
 
 ```bash
-IO=64 PORT=9992 npx @bitfocusas/gmockup-bmd-videohub
+IO=64 PORT=9992 npx @bitfocusas/mockup-bmd-videohub
 ```
 
 The server will start and announce:
@@ -74,7 +74,7 @@ Successfully bound 9992
 
 We welcome contributions from the community!
 
-- **Bug Reports & Feature Requests:** Please use the [issue tracker](https://github.com/bitfocusas/gmockup-bmd-videohub/issues) to report any bugs or request new features.
+- **Bug Reports & Feature Requests:** Please use the [issue tracker](https://github.com/bitfocusas/mockup-bmd-videohub/issues) to report any bugs or request new features.
 - **Pull Requests:** Feel free to fork the repository and submit pull requests for improvements.
 
 ## Support
