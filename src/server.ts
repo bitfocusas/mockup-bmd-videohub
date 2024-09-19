@@ -7,9 +7,10 @@ type PortStatus = "U" | "L" | "O" | "F";
 // Define initial labels
 const inputLabels: Label = {};
 const outputLabels: Label = {};
-const inputCount = 8096;
-const outputCount = 8096;
-
+const videoOutputRouting: Routing = {};
+const videoOutputLocks: Locks = {};
+let inputCount = process.env.IO ? Number.parseInt(process.env.IO) : 128;
+let outputCount = process.env.IO ? Number.parseInt(process.env.IO) : 128;
 interface Label {
 	[key: number]: string;
 }
@@ -26,7 +27,6 @@ interface ClientState {
 	address: string;
 }
 
-const PORT = 9991;
 const server = net.createServer();
 
 // Keep track of all connected clients
@@ -75,26 +75,6 @@ function sendProtocolPreamble(socket: net.Socket) {
 function sendDeviceInformation(socket: net.Socket) {
 	const deviceInfo = `VIDEOHUB DEVICE:\r\nDevice present: true\r\nModel name: Blackmagic Smart Videohub\r\nVideo inputs: ${inputCount}\r\nVideo processing units: 0\r\nVideo outputs: ${outputCount}\r\nVideo monitoring outputs: 0\r\nSerial ports: 0\r\n\r\n`;
 	socket.write(deviceInfo);
-}
-
-for (let i = 0; i < inputCount; i++) {
-	inputLabels[i] = `Input ${i + 1}`;
-}
-
-for (let i = 0; i < outputCount; i++) {
-	outputLabels[i] = `Output ${i + 1}`;
-}
-
-// Define initial routing (map outputs to inputs)
-const videoOutputRouting: Routing = {};
-for (let i = 0; i < outputCount; i++) {
-	videoOutputRouting[i] = i; // Initially, route input N to output N
-}
-
-// Define initial locks (all unlocked)
-const videoOutputLocks: Locks = {};
-for (let i = 0; i < outputCount; i++) {
-	videoOutputLocks[i] = "U";
 }
 
 function sendInitialStatusDump(socket: net.Socket) {
@@ -350,13 +330,39 @@ export function startServer(port = 9990): net.Server {
 	const server = net.createServer();
 
 	server.listen(port, () => {
-		console.log(`Videohub mock server listening on port ${port}`);
+		console.log(`Successfully bound ${port}`);
 	});
 
 	return server;
 }
 
+export function init(ioCount: number) {
+	inputCount = ioCount;
+	outputCount = ioCount;
+
+	for (let i = 0; i < inputCount; i++) {
+		inputLabels[i] = `Input ${i + 1}`;
+	}
+
+	for (let i = 0; i < outputCount; i++) {
+		outputLabels[i] = `Output ${i + 1}`;
+	}
+
+	// Define initial routing (map outputs to inputs)
+
+	for (let i = 0; i < outputCount; i++) {
+		videoOutputRouting[i] = i; // Initially, route input N to output N
+	}
+
+	// Define initial locks (all unlocked)
+
+	for (let i = 0; i < outputCount; i++) {
+		videoOutputLocks[i] = "U";
+	}
+}
+
 if (require.main === module) {
-	// If the script is run directly, start the server
-	startServer(PORT);
+	// port and iocount announce
+	console.log(`Starting server with ${process.env.IO || 128} IOs`);
+	startServer(Number.parseInt(process.env.PORT as string) || 9990);
 }

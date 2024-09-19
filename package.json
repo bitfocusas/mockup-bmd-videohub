@@ -1,7 +1,7 @@
 {
-  "name": "mockup-bmd-videohub",
+  "name": "@bitfocus/mockup-bmd-videohub",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "start": "node dist/server.js",
     "build": "tsc",
@@ -15,6 +15,22 @@
     "server",
     "device"
   ],
+  "release-it": {
+    "github": {
+      "release": true
+    },
+    "git": {
+      "commitMessage": "Release v${version}",
+      "requireBranch": [
+        "main",
+        "master"
+      ],
+      "tagName": "v${version}"
+    },
+    "npm": {
+      "publish": false
+    }
+  },
   "author": "William Viker <william@bitfocus.io>",
   "license": "MIT",
   "description": "",
