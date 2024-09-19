@@ -1,7 +1,3 @@
-Apologies for the oversight earlier. Here's the professional-looking `README.md` as per your request:
-
----
-
 # Mockup Blackmagic Videohub Server
 
 [![NPM Version](https://img.shields.io/npm/v/@bitfocus/mockup-bmd-videohub.svg)](https://www.npmjs.com/package/@bitfocus/mockup-bmd-videohub)
