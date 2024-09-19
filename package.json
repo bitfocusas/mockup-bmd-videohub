@@ -1,6 +1,6 @@
 {
   "name": "@bitfocusas/mockup-bmd-videohub",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./dist/index.js",
   "scripts": {
     "start": "node dist/server.js",
