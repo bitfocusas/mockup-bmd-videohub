@@ -364,5 +364,6 @@ export function init(ioCount: number) {
 if (require.main === module) {
 	// port and iocount announce
 	console.log(`Starting server with ${process.env.IO || 128} IOs`);
+	init(Number.parseInt(process.env.IO as string) || 128);
 	startServer(Number.parseInt(process.env.PORT as string) || 9990);
 }
