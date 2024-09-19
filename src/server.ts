@@ -329,8 +329,6 @@ function handleInputLabelsCommand(socket: net.Socket, lines: string[]) {
 }
 
 export function startServer(port = 9990): net.Server {
-	const server = net.createServer();
-
 	server.listen(port, () => {
 		console.log(`Successfully bound ${port}`);
 	});
