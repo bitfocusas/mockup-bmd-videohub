@@ -20,7 +20,7 @@
   ],
   "release-it": {
     "github": {
-      "release": true
+      "release": false
     },
     "git": {
       "commitMessage": "Release v${version}",
@@ -31,7 +31,7 @@
       "tagName": "v${version}"
     },
     "npm": {
-      "publish": false
+      "publish": true
     }
   },
   "publishConfig": {
