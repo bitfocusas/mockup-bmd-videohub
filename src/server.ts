@@ -200,7 +200,7 @@ function handleVideoOutputRoutingCommand(socket: net.Socket, lines: string[]) {
 		const output = Number.parseInt(outputStr);
 		const input = Number.parseInt(inputStr);
 		if (!Number.isNaN(output) && !Number.isNaN(input)) {
-			if (videoOutputLocks[output] === "L") {
+			if (videoOutputLocks[output] !== "U") {
 				changes[output] = videoOutputRouting[output];
 				updated = true;
 				continue;
